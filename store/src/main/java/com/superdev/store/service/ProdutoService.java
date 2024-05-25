@@ -3,6 +3,7 @@ package com.superdev.store.service;
 import com.superdev.store.model.Produto;
 import com.superdev.store.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -25,5 +26,27 @@ public class ProdutoService {
 
     public void delete(Produto produto) {
         produtoRepository.delete(produto);
+    }
+
+    public boolean comprar(int id, int quantidade) {
+        Produto produtoEncontrado = findById(id);
+        if (produtoEncontrado == null) {
+            return false;
+        }
+
+        produtoEncontrado.setQuantidade(produtoEncontrado.getQuantidade() + quantidade);
+        save(produtoEncontrado);
+        return true;
+    }
+
+    public boolean vender(int id, int quantidade) {
+        Produto produtoEncontrado = findById(id);
+        if (produtoEncontrado == null || produtoEncontrado.getQuantidade() < quantidade) {
+            return false;
+        }
+
+        produtoEncontrado.setQuantidade(produtoEncontrado.getQuantidade() - quantidade);
+        save(produtoEncontrado);
+        return true;
     }
 }
